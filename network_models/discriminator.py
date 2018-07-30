@@ -46,9 +46,9 @@ class Discriminator:
 
             # optimizer: adagrad, rmsprop, adadelta, adam, cocob
             if self._optimizer == 'adagrad':
-                optimizer = tf.train.AdamOptimizer()  # initial_accumulator_value=0.1
+                optimizer = tf.train.AdagradOptimizer(learning_rate=0.0001)  # initial_accumulator_value=0.1
             elif self._optimizer == 'rmsprop':
-                optimizer = tf.train.RMSPropOptimizer()  # decay=0.9, momentum=0.0, epsilon=1e-10, use_locking=False, centered=False
+                optimizer = tf.train.RMSPropOptimizer(learning_rate=0.00025)  # decay=0.9, momentum=0.0, epsilon=1e-10, use_locking=False, centered=False
             elif self._optimizer == 'adadelta':
                 optimizer = tf.train.RMSPropOptimizer()  # learning_rate=0.001, rho=0.95, epsilon=1e-08, use_locking=False
             elif self._optimizer == 'cocob':
