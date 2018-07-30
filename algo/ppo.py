@@ -80,15 +80,14 @@ class PPOTrain:
         if self._optimizer == 'adagrad':
             optimizer = tf.train.AdagradOptimizer(learning_rate=0.0001)  # initial_accumulator_value=0.1
         elif self._optimizer == 'rmsprop':
-            optimizer = tf.train.RMSPropOptimizer(
-                learning_rate=0.00025)  # decay=0.9, momentum=0.0, epsilon=1e-10, use_locking=False, centered=False
+            optimizer = tf.train.RMSPropOptimizer(learning_rate=0.00025)  # decay=0.9, momentum=0.0, epsilon=1e-10, use_locking=False, centered=False
         elif self._optimizer == 'adadelta':
-            optimizer = tf.train.RMSPropOptimizer() #learning_rate=0.001, rho=0.95, epsilon=1e-08, use_locking=False
+            optimizer = tf.train.AdadeltaOptimizer(learning_rate=0.001) #learning_rate=0.001, rho=0.95, epsilon=1e-08, use_locking=False
         elif self._optimizer == 'cocob':
             optimizer = cocob.COCOB()
         else: #adam
             #optimizer = tf.train.AdamOptimizer(learning_rate=1e-4, epsilon=1e-5)
-            optimizer = tf.train.AdamOptimizer() #lr=0.001, beta1=0.9, beta2=0.999, epsilon=1e-08, use_locking=False
+            optimizer = tf.train.AdamOptimizer(learning_rate=0.001) #lr=0.001, beta1=0.9, beta2=0.999, epsilon=1e-08, use_locking=False
         self.train_op = optimizer.minimize(loss, var_list=pi_trainable)
 
         # self.gradients = optimizer.compute_gradients(loss, var_list=pi_trainable)
