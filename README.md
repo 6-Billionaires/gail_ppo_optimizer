@@ -1,2 +1,2 @@
 # gail_ppo_optimizer
-Optimizer Test for Billionaires3
+GAIL + PPO + WGAN-GP loss + Optimizers
