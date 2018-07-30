@@ -23,12 +23,12 @@ def open_file_and_save(file_path, data):
 def argparser():
     parser = argparse.ArgumentParser()
     # CartPole-v1, Arcobot-v1, Pendulum-v0, HalfCheetah-v2, Hopper-v2, Walker2d-v2, Humanoid-v2
-    parser.add_argument('--env', help='gym name', default='CartPole-v0')
+    parser.add_argument('--env', help='gym name', default='HalfCheetah-v2')
     # adagrad, rmsprop, adadelta, adam, cocob
-    parser.add_argument('--optimizer', help='optimizer type name', default='adam')
+    parser.add_argument('--optimizer', help='optimizer type name', default='cocob')
     parser.add_argument('--savedir', help='save directory', default='trained_models/ppo')
     parser.add_argument('--tradir', help='trajectory directory', default='trajectory/ppo')
-    parser.add_argument('--iteration', default=10, type=int)
+    parser.add_argument('--iteration', default=500, type=int)
 
     return parser.parse_args()
 
@@ -48,7 +48,7 @@ def main(args):
     env = gym.make(args.env)
     env.seed(0)
     ob_space = env.observation_space
-    Policy = Policy_net('policy', env)
+    Policy = Policy_net('policy', env, args.env)
     saver = tf.train.Saver()
 
     with tf.Session() as sess:
@@ -74,7 +74,7 @@ def main(args):
                 next_obs, reward, done, info = env.step(act)
 
                 if done:
-                    print(run_steps)
+                    print('iteration:', iteration)
                     obs = env.reset()
                     break
                 else:
@@ -84,7 +84,8 @@ def main(args):
             actions = np.array(actions).astype(dtype=np.int32)
 
             open_file_and_save(args.tradir+'/observations.csv', observations)
-            open_file_and_save(args.tradir+'trajectory/actions.csv', actions)
+            open_file_and_save(args.tradir+'/actions.csv', actions)
+        print('done')
 
 
 if __name__ == '__main__':
