@@ -1,0 +1,4 @@
+AdagradOptimizer learning_rate=0.01
+AdamOptimizer learning_rate=0.001
+RMSPropOptimizer
+AdadeltaOptimizer
