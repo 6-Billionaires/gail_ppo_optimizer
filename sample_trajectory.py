@@ -23,12 +23,12 @@ def open_file_and_save(file_path, data):
 def argparser():
     parser = argparse.ArgumentParser()
     # CartPole-v1, Arcobot-v1, Pendulum-v0, HalfCheetah-v2, Hopper-v2, Walker2d-v2, Humanoid-v2
-    parser.add_argument('--env', help='gym name', default='HalfCheetah-v2')
+    parser.add_argument('--env', help='gym name', default='CartPole-v1')
     # adagrad, rmsprop, adadelta, adam, cocob
-    parser.add_argument('--optimizer', help='optimizer type name', default='cocob')
+    parser.add_argument('--optimizer', help='optimizer type name', default='adam')
     parser.add_argument('--savedir', help='save directory', default='trained_models/ppo')
     parser.add_argument('--tradir', help='trajectory directory', default='trajectory/ppo')
-    parser.add_argument('--iteration', default=500, type=int)
+    parser.add_argument('--iteration', default=1000, type=int)
 
     return parser.parse_args()
 
@@ -55,10 +55,11 @@ def main(args):
         sess.run(tf.global_variables_initializer())
         saver.restore(sess, args.savedir + '/model.ckpt')
         obs = env.reset()
-
+        trj_cnt = 0;
         for iteration in range(args.iteration):  # episode
             observations = []
             actions = []
+            rewards = []
             run_steps = 0
             while True:
                 run_steps += 1
@@ -68,25 +69,30 @@ def main(args):
                 act, _ = Policy.act(obs=obs, stochastic=True)
                 act = np.asscalar(act)
 
-                observations.append(obs)
-                actions.append(act)
-
                 next_obs, reward, done, info = env.step(act)
 
+                observations.append(obs)
+                actions.append(act)
+                rewards.append(reward)
+
                 if done:
-                    print('iteration:', iteration)
+                    print('rewards:', sum(rewards))
                     obs = env.reset()
                     break
                 else:
                     obs = next_obs
+            if sum(rewards) >= 500:
+                print('trj_cnt:', trj_cnt)
+                trj_cnt += 1
+                observations = np.reshape(observations, newshape=[-1] + list(ob_space.shape))
+                actions = np.array(actions).astype(dtype=np.int32)
 
-            observations = np.reshape(observations, newshape=[-1] + list(ob_space.shape))
-            actions = np.array(actions).astype(dtype=np.int32)
+                open_file_and_save(args.tradir+'/observations.csv', observations)
+                open_file_and_save(args.tradir+'/actions.csv', actions)
 
-            open_file_and_save(args.tradir+'/observations.csv', observations)
-            open_file_and_save(args.tradir+'/actions.csv', actions)
-        print('done')
-
+                if trj_cnt >= 50:
+                    print('done')
+                    break
 
 if __name__ == '__main__':
     args = argparser()
