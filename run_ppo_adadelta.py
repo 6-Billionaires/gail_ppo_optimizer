@@ -15,7 +15,7 @@ def argparser():
     #CartPole-v1, Arcobot-v1, Pendulum-v0, HalfCheetah-v2, Hopper-v2, Walker2d-v2, Humanoid-v2
     parser.add_argument('--env', help='gym name', default='CartPole-v1')
     #adagrad, rmsprop, adadelta, adam, cocob
-    parser.add_argument('--optimizer', help='optimizer type name', default='adagrad')
+    parser.add_argument('--optimizer', help='optimizer type name', default='adadelta')
     parser.add_argument('--logdir', help='log directory', default='log/train/ppo')
     parser.add_argument('--savedir', help='save directory', default='trained_models/ppo')
     return parser.parse_args()
