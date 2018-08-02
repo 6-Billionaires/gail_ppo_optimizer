@@ -11,11 +11,12 @@ from algo.ppo import PPOTrain
 def argparser():
     parser = argparse.ArgumentParser()
     parser.add_argument('--gamma', default=0.995, type=float)
-    parser.add_argument('--iteration', default=int(1e4), type=int)
+    parser.add_argument('--iteration', default=int(2e5), type=int)
     #CartPole-v1, Arcobot-v1, Pendulum-v0, HalfCheetah-v2, Hopper-v2, Walker2d-v2, Humanoid-v2
-    parser.add_argument('--env', help='gym name', default='HalfCheetah-v2')
+    parser.add_argument('--env', help='gym name', default='Hopper-v2')
     #adagrad, rmsprop, adadelta, adam, cocob
     parser.add_argument('--optimizer', help='optimizer type name', default='cocob')
+    parser.add_argument('--lr', help='Learning Rate', default=0.0)
     parser.add_argument('--logdir', help='log directory', default='log/train/ppo')
     parser.add_argument('--savedir', help='save directory', default='trained_models/ppo')
     return parser.parse_args()
@@ -44,7 +45,7 @@ def main(args):
     ob_space = env.observation_space
     Policy = Policy_net('policy', env, args.env)
     Old_Policy = Policy_net('old_policy', env, args.env)
-    PPO = PPOTrain(Policy, Old_Policy, gamma=args.gamma, _optimizer=args.optimizer)
+    PPO = PPOTrain(Policy, Old_Policy, gamma=args.gamma, _optimizer=args.optimizer, _lr=args.lr)
     saver = tf.train.Saver()
 
     with tf.Session() as sess:
