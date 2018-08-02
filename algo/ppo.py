@@ -4,7 +4,7 @@ import algo.CocobOptimizer as cocob
 
 
 class PPOTrain:
-    def __init__(self, Policy, Old_Policy, gamma=0.95, clip_value=0.2, c_1=1, c_2=0.01, _optimizer='adam'):
+    def __init__(self, Policy, Old_Policy, gamma=0.95, clip_value=0.2, c_1=1, c_2=0.01, _optimizer='adam', _lr=0.0):
         """
         :param Policy:
         :param Old_Policy:
@@ -18,6 +18,7 @@ class PPOTrain:
         self.Old_Policy = Old_Policy
         self.gamma = gamma
         self._optimizer = _optimizer
+        self._lr = _lr
 
         pi_trainable = self.Policy.get_trainable_variables()
         old_pi_trainable = self.Old_Policy.get_trainable_variables()
@@ -78,16 +79,16 @@ class PPOTrain:
         self.merged = tf.summary.merge_all()
         #optimizer: adagrad, rmsprop, adadelta, adam, cocob
         if self._optimizer == 'adagrad':
-            optimizer = tf.train.AdagradOptimizer(learning_rate=0.01)  # initial_accumulator_value=0.1
+            optimizer = tf.train.AdagradOptimizer(learning_rate=self._lr)  # initial_accumulator_value=0.1
         elif self._optimizer == 'rmsprop':
-            optimizer = tf.train.RMSPropOptimizer(learning_rate=0.00025)  # decay=0.9, momentum=0.0, epsilon=1e-10, use_locking=False, centered=False
+            optimizer = tf.train.RMSPropOptimizer(learning_rate=self._lr)  # decay=0.9, momentum=0.0, epsilon=1e-10, use_locking=False, centered=False
         elif self._optimizer == 'adadelta':
-            optimizer = tf.train.AdadeltaOptimizer(learning_rate=0.5) #learning_rate=0.001, rho=0.95, epsilon=1e-08, use_locking=False
+            optimizer = tf.train.AdadeltaOptimizer(learning_rate=self._lr) #learning_rate=0.001, rho=0.95, epsilon=1e-08, use_locking=False
         elif self._optimizer == 'cocob':
             optimizer = cocob.COCOB()
         else: #adam
             #optimizer = tf.train.AdamOptimizer(learning_rate=1e-4, epsilon=1e-5)
-            optimizer = tf.train.AdamOptimizer(learning_rate=0.001) #lr=0.001, beta1=0.9, beta2=0.999, epsilon=1e-08, use_locking=False
+            optimizer = tf.train.AdamOptimizer(learning_rate=self._lr) #lr=0.001, beta1=0.9, beta2=0.999, epsilon=1e-08, use_locking=False
         self.train_op = optimizer.minimize(loss, var_list=pi_trainable)
 
         # self.gradients = optimizer.compute_gradients(loss, var_list=pi_trainable)
