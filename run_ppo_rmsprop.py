@@ -16,7 +16,7 @@ def argparser():
     parser.add_argument('--env', help='gym name', default='Acrobot-v1')
     #adagrad, rmsprop, adadelta, adam, cocob
     parser.add_argument('--optimizer', help='optimizer type name', default='rmsprop')
-    parser.add_argument('--lr', help='Learning Rate', default=0.0005)
+    parser.add_argument('--lr', help='Learning Rate', default=0.001)
     parser.add_argument('--logdir', help='log directory', default='log/train/ppo')
     parser.add_argument('--savedir', help='save directory', default='trained_models/ppo')
     return parser.parse_args()
