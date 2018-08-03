@@ -11,9 +11,9 @@ from algo.ppo import PPOTrain
 def argparser():
     parser = argparse.ArgumentParser()
     parser.add_argument('--gamma', default=0.995, type=float)
-    parser.add_argument('--iteration', default=int(2e5), type=int)
-    #CartPole-v1, Arcobot-v1, Pendulum-v0, HalfCheetah-v2, Hopper-v2, Walker2d-v2, Humanoid-v2
-    parser.add_argument('--env', help='gym name', default='Hopper-v2')
+    parser.add_argument('--iteration', default=int(1e4), type=int)
+    #CartPole-v1, Acrobot-v1, Pendulum-v0, HalfCheetah-v2, Hopper-v2, Walker2d-v2, Humanoid-v2
+    parser.add_argument('--env', help='gym name', default='Acrobot-v1')
     #adagrad, rmsprop, adadelta, adam, cocob
     parser.add_argument('--optimizer', help='optimizer type name', default='cocob')
     parser.add_argument('--lr', help='Learning Rate', default=0.0)
